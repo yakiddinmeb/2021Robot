@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - skallaher/spotless # Used for testing
   pull_request:
     branches:
       - master
