@@ -2,7 +2,6 @@ package com.chargerrobotics.utils;
 
 import com.chargerrobotics.utils.XboxPovButton.POVDirection;
 import com.google.common.annotations.VisibleForTesting;
-
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.HashMap;
@@ -67,8 +66,8 @@ public class XboxController {
   }
 
   /**
-   * Get instance of the controller with specified ID and use provided
-   * factory to create a controller. This is intended for testing purposes
+   * Get instance of the controller with specified ID and use provided factory to create a
+   * controller. This is intended for testing purposes
    *
    * @param id The ID of the controller to get
    * @param WpiLibXboxControllerFactory A factory to create the internal controller to use
