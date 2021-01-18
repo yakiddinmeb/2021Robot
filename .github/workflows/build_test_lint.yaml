@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - skallaher/testing
   pull_request:
     branches:
       - master
