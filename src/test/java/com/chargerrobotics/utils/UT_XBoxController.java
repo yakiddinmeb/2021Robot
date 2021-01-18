@@ -1,15 +1,17 @@
 package com.chargerrobotics.utils;
 
-// Import testing libraries
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 
 import com.chargerrobotics.utils.XboxController.WpiLibXboxControllerFactory;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
-import org.testng.annotations.*;
-
-// Import the unit under test
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 public class UT_XBoxController {
 
@@ -64,8 +66,6 @@ public class UT_XBoxController {
     }
 
     assertNotEquals(joystickReading, 2.0, "Joystick reading not set!");
-    System.out.println(
-        "Testing " + value + ", " + hand + " : " + expectedValue + " == " + joystickReading);
     assertEquals(joystickReading, expectedValue, joystickAcceptableError);
   }
 
@@ -92,6 +92,7 @@ public class UT_XBoxController {
         break;
     }
 
+    assertNotEquals(joystickReading, 2.0, "Joystick reading not set!");
     assertEquals(joystickReading, expectedValue, joystickAcceptableError);
   }
 
