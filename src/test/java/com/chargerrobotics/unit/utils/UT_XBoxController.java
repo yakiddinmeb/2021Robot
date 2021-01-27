@@ -14,7 +14,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class UT_XBoxController{
+public class UT_XBoxController {
 
   private static final double joystickAcceptableError = 0.000001;
 
