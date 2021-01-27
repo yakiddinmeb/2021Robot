@@ -24,6 +24,8 @@ public class UT_XBoxController {
 
   @BeforeClass
   public void setUp() {
+    XboxController.closeAll();
+
     // Init unit under test
     internalControllerMock = mock(edu.wpi.first.wpilibj.XboxController.class);
 

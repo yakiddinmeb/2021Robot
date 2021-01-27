@@ -110,6 +110,7 @@ public abstract class SimulatedTest {
     System.out.flush();
 
     DriverStationSim.setEnabled(false);
+    XboxController.closeAll();
   }
 
   /**
