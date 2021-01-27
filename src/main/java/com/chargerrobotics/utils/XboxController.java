@@ -5,7 +5,6 @@ import com.google.common.annotations.VisibleForTesting;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 public class XboxController {
 
@@ -13,7 +12,8 @@ public class XboxController {
     public edu.wpi.first.wpilibj.XboxController getController(int id);
   }
 
-  private static final HashMap<Integer, XboxController> instances = new HashMap<Integer, XboxController>();
+  private static final HashMap<Integer, XboxController> instances =
+      new HashMap<Integer, XboxController>();
 
   edu.wpi.first.wpilibj.XboxController controller;
 
@@ -55,21 +55,22 @@ public class XboxController {
    * @return Controller with the given ID
    */
   public static XboxController getInstance(int id) {
-    return getInstance(id, new WpiLibXboxControllerFactory() {
-      @Override
-      public edu.wpi.first.wpilibj.XboxController getController(int id) {
-        return new edu.wpi.first.wpilibj.XboxController(id);
-      }
-    });
+    return getInstance(
+        id,
+        new WpiLibXboxControllerFactory() {
+          @Override
+          public edu.wpi.first.wpilibj.XboxController getController(int id) {
+            return new edu.wpi.first.wpilibj.XboxController(id);
+          }
+        });
   }
 
   /**
-   * Get instance of the controller with specified ID and use provided factory to
-   * create a controller. This is intended for testing purposes
+   * Get instance of the controller with specified ID and use provided factory to create a
+   * controller. This is intended for testing purposes
    *
-   * @param id                          The ID of the controller to get
-   * @param WpiLibXboxControllerFactory A factory to create the internal
-   *                                    controller to use
+   * @param id The ID of the controller to get
+   * @param WpiLibXboxControllerFactory A factory to create the internal controller to use
    * @return Controller with the given ID
    */
   @VisibleForTesting

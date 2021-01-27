@@ -10,11 +10,9 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.simulation.XboxControllerSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import java.lang.reflect.Method;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 public abstract class SimulatedTest {
@@ -58,7 +56,7 @@ public abstract class SimulatedTest {
     }
 
     public void reset() {
-        completed = false;
+      completed = false;
     }
 
     @Override
@@ -113,10 +111,7 @@ public abstract class SimulatedTest {
     XboxController.closeAll();
   }
 
-  /**
-   * Begins running the robot in its test state, to be called just before
-   * testing anything.
-   */
+  /** Begins running the robot in its test state, to be called just before testing anything. */
   protected void startRobot() {
     robotThread.start();
     RobotBase.suppressExitWarning(true);
@@ -139,8 +134,8 @@ public abstract class SimulatedTest {
   }
 
   /**
-   * Get a {@link CommandConsumer} which is configured to mark when the given command
-   * is finished.
+   * Get a {@link CommandConsumer} which is configured to mark when the given command is finished.
+   *
    * @param command The {@link Command} to monitor for completion
    * @return The {@link CommandConsumer} which is notified when the {@link Command} is completed.
    */
@@ -155,9 +150,9 @@ public abstract class SimulatedTest {
   }
 
   /**
-   * Wait for the {@link CommandConsumer} to be notified that its command is finished or
-   * for the timeout to expire
-   * 
+   * Wait for the {@link CommandConsumer} to be notified that its command is finished or for the
+   * timeout to expire
+   *
    * @param commandConsumer The {@link CommandConsumer} to monitor
    * @param timeoutSeconds The number of seconds after which the wait should timeout
    * @return Whether or not the wait timed out
