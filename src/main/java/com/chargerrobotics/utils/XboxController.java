@@ -82,6 +82,10 @@ public class XboxController {
     return instances.get(id);
   }
 
+  public static void closeAll() {
+    instances.clear();
+  }
+
   private void setupButtons() {
     buttonA = new JoystickButton(controller, XboxControllerButton.A.getId());
     buttonB = new JoystickButton(controller, XboxControllerButton.B.getId());

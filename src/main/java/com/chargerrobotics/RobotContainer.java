@@ -55,6 +55,7 @@ import com.chargerrobotics.utils.XboxController;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -136,26 +137,59 @@ public class RobotContainer {
   public BallSensorSerial ballSensor = new BallSensorSerial();
 
   // LEDs
-  public LEDSubsystem leds = new LEDSubsystem();
+  public LEDSubsystem leds;
 
   // controllers
-  public static final XboxController primary = XboxController.getInstance(Constants.primary);
-  public static final XboxController secondary = XboxController.getInstance(Constants.secondary);
+  public XboxController primary;
+  public XboxController secondary;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    primary = XboxController.getInstance(Constants.primary);
+    secondary = XboxController.getInstance(Constants.secondary);
+    setupSubsytemsAndCommands();
+    setupBindings();
+    setupCamera();
+  }
+
+  /**
+   * Create a container for the robot and initialize subsystems, IO devices, and commands.
+   *
+   * <p>This overload is typically used for testing purposes. It is recommended to use the
+   * constructor with no arguments for most applications.
+   *
+   * @param primaryController The controller used for the driver system
+   * @param secondaryController The controller used for the secondary systems
+   */
+  public RobotContainer(XboxController primaryController, XboxController secondaryController) {
+    primary = primaryController;
+    secondary = secondaryController;
+    setupSubsytemsAndCommands();
+    setupBindings();
+    setupCamera();
+  }
+
+  private void setupSubsytemsAndCommands() {
+
     ArduinoSerialReceiver.initialization(
         () -> {
           ballSensor.resetCount();
         });
     Config.setup();
+
+    if (RobotBase.isReal()) {
+      // Do not initialize the LEDSubsytem unless on the real robot
+      // as it cannot be easily reset when simulating
+      leds = new LEDSubsystem();
+    }
+
     if (feedEnabled) {
       feedSubsystem = FeedSubsystem.getInstance();
       feederCommand = new FeederCommand(feedSubsystem);
     }
     if (driveEnabled) {
-      driveSubsystem = DriveSubsystem.getInstance();
-      manualDriveCommand = new ManualDriveCommand(driveSubsystem);
+      driveSubsystem = DriveSubsystem.getInstance(primary);
+      manualDriveCommand = new ManualDriveCommand(driveSubsystem, primary);
       brakeCommand = new BrakeCommand(driveSubsystem);
       boostCommand = new BoostCommand(driveSubsystem);
       slowCommand = new SlowCommand(driveSubsystem);
@@ -208,13 +242,15 @@ public class RobotContainer {
       climberUpCommand = new ClimberUpCommand(climberSubsystem);
       climberDownCommand = new ClimberDownCommand(climberSubsystem);
     }
-    setupBindings();
-    setupCamera();
   }
 
   public void setupCamera() {
-    UsbCamera cam = CameraServer.getInstance().startAutomaticCapture();
-    cam.setConnectVerbose(0);
+    if (RobotBase.isReal()) {
+      // Only setup camera resources when on the real robot as
+      // it cannot be simulated easily
+      UsbCamera cam = CameraServer.getInstance().startAutomaticCapture();
+      cam.setConnectVerbose(0);
+    }
   }
 
   /**
