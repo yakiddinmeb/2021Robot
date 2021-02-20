@@ -54,14 +54,14 @@ public class LimelightSubsystem extends SubsystemBase {
 	// Placeholder values for coordinates of markers, in inches (should probably put
 	// these in constants but don't want to screw up anything)
 	// Looking down on the field with the initiation line to the south, the markers
-	// would be placed as:  
+	// would be placed as:
 	// 2                 N                  3
 	//
-	// W              \(robot)/             E
+	// W          \(robot)/                 E
 	//
 	//
 	// 1 ___________________________________4
-	//                    S
+	//                   S
 
 	public final double onex = 0;
 	public final double oney = 0;
@@ -104,20 +104,23 @@ public class LimelightSubsystem extends SubsystemBase {
 	public double realangle;
 	public double compassdeg;
 
-	public Double distanceM() {
+	// finds distance to markers
+	public int findPL() {
 		for (int b = 0; b <= 10; b++) {
-			pl = b;
 			pip.setNumber(b);
+			pl = b;
 			if (v == 1)
 				break;
 			// cycles through pipelines looking for a target
 		}
-		if (pl == 0 || pl == 1) {
-			return null;
-			// pipeline 0 will be the shooter target, 1 will be fuel point, marker distance
-			// does not apply
-		}
-		distM = Constants.cameraHeight * (Math.tan(Math.toRadians(y - Constants.cameraAngle)));
+
+		return pl;
+
+	}
+
+	public Double distanceM() {
+
+		distM = Constants.cameraHeight * (Math.tan(Math.toRadians(Math.abs(y - Constants.cameraAngle))));
 		return distM;
 	}
 
@@ -127,6 +130,7 @@ public class LimelightSubsystem extends SubsystemBase {
 		if (v == 0) {
 			return null;
 		} else {
+			findPL();
 			if (pl == 2 || pl == 4) {
 				skew = s * -1.0;
 				realangle = skew + x;
@@ -161,7 +165,7 @@ public class LimelightSubsystem extends SubsystemBase {
 		if (v == 0) {
 			return null;
 		} else {
-
+			findPL();
 			if (pl == 2 || pl == 4) {
 				skew = s * -1.0;
 				realangle = skew + x;
@@ -191,10 +195,12 @@ public class LimelightSubsystem extends SubsystemBase {
 		return Y;
 	}
 
+	// finds absolute rotation of robot on field,
 	public Double degrees() {
 		if (v == 0) {
 			return null;
 		} else {
+			findPL();
 			switch (pl) {
 				case 0:
 					return null;
