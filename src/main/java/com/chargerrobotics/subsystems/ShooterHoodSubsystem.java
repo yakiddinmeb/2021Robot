@@ -57,6 +57,8 @@ public class ShooterHoodSubsystem extends SubsystemBase {
     public double getHoodPosition() {
         return (double)shooterHood.getSensorCollection().getQuadraturePosition();
     }
+    
+
 
     @Override
     public void periodic() {
@@ -67,5 +69,6 @@ public class ShooterHoodSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("hood Current", shooterHood.getSupplyCurrent());
         SmartDashboard.putBoolean("HoodTriggered?", isLimitSwitchTriggered());
     }
+    
 
 }
