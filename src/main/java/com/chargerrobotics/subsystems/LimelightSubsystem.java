@@ -53,15 +53,16 @@ public class LimelightSubsystem extends SubsystemBase {
 
 	// Placeholder values for coordinates of markers, in inches (should probably put
 	// these in constants but don't want to screw up anything)
-	// Looking down on the field with the initiation line to the south, the markers
+	// Looking down on the field with the initiation line to the south, the markers  
 	// would be placed as:
-	// 2                 N                  3
+	// 2|                 N                 |3
 	//
-	// W          \(robot)/                 E
+	// W            \(r😏bot)/              E
 	//
 	//
-	// 1 ___________________________________4
+	// 1| __________________________________|4
 	//                   S
+	//The lines next to each number represent the way a board covered in retroreflective tape of a specfic color or shape are placed in respect to eachother.
 
 	public final double onex = 0;
 	public final double oney = 0;
@@ -104,7 +105,7 @@ public class LimelightSubsystem extends SubsystemBase {
 	public double realangle;
 	public double compassdeg;
 
-	// finds distance to markers
+	
 	public int findPL() {
 		for (int b = 0; b <= 10; b++) {
 			pip.setNumber(b);
@@ -117,9 +118,11 @@ public class LimelightSubsystem extends SubsystemBase {
 		return pl;
 
 	}
-
+	// finds distance to markers
 	public Double distanceM() {
-
+		findPL();
+		if (pl == 0 || pl == 1)
+			return null;
 		distM = Constants.cameraHeight * (Math.tan(Math.toRadians(Math.abs(y - Constants.cameraAngle))));
 		return distM;
 	}
@@ -127,33 +130,30 @@ public class LimelightSubsystem extends SubsystemBase {
 	// returns x coordinates in inches
 	public Double locX() {
 		double skew;
-		if (v == 0) {
-			return null;
+
+		findPL();
+		if (pl == 2 || pl == 4) {
+			skew = s * -1.0;
+			realangle = skew + x;
+		} else if (pl == 3 || pl == 5) {
+			skew = s + 90.0;
+			realangle = skew - x;
 		} else {
-			findPL();
-			if (pl == 2 || pl == 4) {
-				skew = s * -1.0;
-				realangle = skew + x;
-			} else if (pl == 3 || pl == 5) {
-				skew = s + 90.0;
-				realangle = skew - x;
-			} else {
+			return null;
+		}
+		switch (pl) {
+			case 0:
 				return null;
-			}
-			switch (pl) {
-				case 0:
-					return null;
-				case 1:
-					return null;
-				case 2:
-					xcoord = onex;
-				case 3:
-					xcoord = twox;
-				case 4:
-					xcoord = threex;
-				case 5:
-					xcoord = fourx;
-			}
+			case 1:
+				return null;
+			case 2:
+				xcoord = onex;
+			case 3:
+				xcoord = twox;
+			case 4:
+				xcoord = threex;
+			case 5:
+				xcoord = fourx;
 		}
 		Double X = distanceM() * Math.cos(Math.toRadians(realangle)) + xcoord;
 		return X;
@@ -162,69 +162,63 @@ public class LimelightSubsystem extends SubsystemBase {
 	// returns y coordinantes in inches
 	public Double locY() {
 		double skew;
-		if (v == 0) {
-			return null;
-		} else {
-			findPL();
-			if (pl == 2 || pl == 4) {
-				skew = s * -1.0;
-				realangle = skew + x;
-			} else if (pl == 3 || pl == 5) {
-				skew = s + 90.0;
-				realangle = skew - x;
-			} else {
-				return null;
-			}
-			switch (pl) {
-				case 0:
-					return null;
-				case 1:
-					return null;
-				case 2:
-					ycoord = oney;
-				case 3:
-					ycoord = twoy;
-				case 4:
-					ycoord = threey;
-				case 5:
-					ycoord = foury;
-			}
-		}
 
+		findPL();
+		if (pl == 2 || pl == 4) {
+			skew = s * -1.0;
+			realangle = skew + x;
+		} else if (pl == 3 || pl == 5) {
+			skew = s + 90.0;
+			realangle = skew - x;
+		} else {
+			return null;
+		}
+		switch (pl) {
+			case 0:
+				return null;
+			case 1:
+				return null;
+			case 2:
+				ycoord = oney;
+			case 3:
+				ycoord = twoy;
+			case 4:
+				ycoord = threey;
+			case 5:
+				ycoord = foury;
+		}
 		Double Y = distanceM() * Math.sin(Math.toRadians(realangle)) + ycoord;
 		return Y;
 	}
 
 	// finds absolute rotation of robot on field,
 	public Double degrees() {
-		if (v == 0) {
-			return null;
-		} else {
-			findPL();
-			switch (pl) {
-				case 0:
-					return null;
-				case 1:
-					return null;
-				case 2:
-					compassdeg = Math.abs(s + x) + 180.00;
-				case 3:
-					compassdeg = Math.abs(s - x) + 270.00;
-				case 4:
-					compassdeg = (s + x) + 90.00;
-				case 5:
-					compassdeg = Math.abs(s - x) + 90;
-			}
 
+		findPL();
+		switch (pl) {
+			case 0:
+				return null;
+			case 1:
+				return null;
+			case 2:
+				compassdeg = 270.00 - Math.abs(s); // marker 1
+			case 3:
+				compassdeg = Math.abs(s) + 270.00; // marker 2
+			case 4:
+				compassdeg = 90.00 - Math.abs(s); // marker 3
+			case 5:
+				compassdeg = Math.abs(s) + 90.00; // marker 4
 		}
-
 		return compassdeg;
+
 	}
 
-	// distance in inches
-	public double distance() {
-		if (v == 0) {
-			return -1.0;
+	// distance in inches to shooter target
+	public Double distance() {
+
+		findPL();
+		if (pl != 0) {
+			return null;
 		} else {
 			/**
 			 * Note: Math.tan takes radians...thus the conversion. Finds distance to
