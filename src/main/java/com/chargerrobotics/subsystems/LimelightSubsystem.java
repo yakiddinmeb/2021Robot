@@ -25,7 +25,7 @@ public class LimelightSubsystem extends SubsystemBase {
 	private boolean isRunning;
 	private static LimelightSubsystem instance;
 
-	private double x, y, v, s;
+	private double x, y, v, s, p;
 
 	public LimelightSubsystem() {
 		table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -51,27 +51,37 @@ public class LimelightSubsystem extends SubsystemBase {
 		camMode.setNumber(enabled ? 0 : 1);
 	}
 
-	// Placeholder values for coordinates of markers, in inches (should probably put
-	// these in constants but don't want to screw up anything)
-	// Looking down on the field with the initiation line to the south, the markers  
+	// Looking down on the field with the initiation line to the south, the markers
 	// would be placed as:
-	// 2|                 N                 |3
+	// 2|                N                  |3
 	//
-	// W            \(r😏bot)/              E
+	// W             \(r😏bot)/             E
 	//
 	//
 	// 1| __________________________________|4
 	//                   S
-	//The lines next to each number represent the way a board covered in retroreflective tape of a specfic color or shape are placed in respect to eachother.
+	// The lines next to each number represent the way a board covered in
+	// retroreflective tape of a specfic color or shape should be placed in respect to
+	// each other.
 
-	public final double onex = 0;
-	public final double oney = 0;
-	public final double twox = 0;
-	public final double twoy = 20;
-	public final double threex = 60;
-	public final double threey = 20;
-	public final double fourx = 60;
-	public final double foury = 0;
+	// pipelines each significant target corresponds to
+	public final int shooterTarget = 0;
+	public final int fuelTarget = 1;
+	public final int MARKER1 = 2;
+	public final int MARKER2 = 3;
+	public final int MARKER3 = 4;
+	public final int MARKER4 = 5;
+
+	// Placeholder values for coordinates of markers, in inches (should probably put
+	// these in constants but don't want to screw up anything)
+	public final double MARKER_ONE_X = 0;
+	public final double MARKER_ONE_Y = 0;
+	public final double MARKER_TWO_X = 0;
+	public final double MARKER_TWO_Y = 20;
+	public final double MARKER_THREE_X = 60;
+	public final double MARKER_THREE_Y = 20;
+	public final double MARKER_FOUR_X = 60;
+	public final double MARKER_FOUR_Y = 0;
 
 	public double getX() {
 		/**
@@ -97,7 +107,6 @@ public class LimelightSubsystem extends SubsystemBase {
 		return s;
 	}
 
-	public int pl;
 	public double distM;
 	public double skewangle;
 	public double xcoord;
@@ -105,23 +114,22 @@ public class LimelightSubsystem extends SubsystemBase {
 	public double realangle;
 	public double compassdeg;
 
-	
+	// cycles through pipelines looking for a target
 	public int findPL() {
 		for (int b = 0; b <= 10; b++) {
 			pip.setNumber(b);
 			pl = b;
 			if (v == 1)
 				break;
-			// cycles through pipelines looking for a target
 		}
-
 		return pl;
-
 	}
+
+	int pl = findPL();
+
 	// finds distance to markers
 	public Double distanceM() {
-		findPL();
-		if (pl == 0 || pl == 1)
+		if (pl == shooterTarget || pl == fuelTarget)
 			return null;
 		distM = Constants.cameraHeight * (Math.tan(Math.toRadians(Math.abs(y - Constants.cameraAngle))));
 		return distM;
@@ -131,11 +139,10 @@ public class LimelightSubsystem extends SubsystemBase {
 	public Double locX() {
 		double skew;
 
-		findPL();
-		if (pl == 2 || pl == 4) {
+		if (pl == MARKER1 || pl == MARKER3) {
 			skew = s * -1.0;
 			realangle = skew + x;
-		} else if (pl == 3 || pl == 5) {
+		} else if (pl == MARKER2 || pl == MARKER4) {
 			skew = s + 90.0;
 			realangle = skew - x;
 		} else {
@@ -147,13 +154,17 @@ public class LimelightSubsystem extends SubsystemBase {
 			case 1:
 				return null;
 			case 2:
-				xcoord = onex;
+				xcoord = MARKER_ONE_X;
+				break;
 			case 3:
-				xcoord = twox;
+				xcoord = MARKER_TWO_X;
+				break;
 			case 4:
-				xcoord = threex;
+				xcoord = MARKER_THREE_X;
+				break;
 			case 5:
-				xcoord = fourx;
+				xcoord = MARKER_FOUR_X;
+				break;
 		}
 		Double X = distanceM() * Math.cos(Math.toRadians(realangle)) + xcoord;
 		return X;
@@ -163,11 +174,10 @@ public class LimelightSubsystem extends SubsystemBase {
 	public Double locY() {
 		double skew;
 
-		findPL();
-		if (pl == 2 || pl == 4) {
+		if (pl == MARKER1 || pl == MARKER3) {
 			skew = s * -1.0;
 			realangle = skew + x;
-		} else if (pl == 3 || pl == 5) {
+		} else if (pl == MARKER2 || pl == MARKER4) {
 			skew = s + 90.0;
 			realangle = skew - x;
 		} else {
@@ -179,13 +189,17 @@ public class LimelightSubsystem extends SubsystemBase {
 			case 1:
 				return null;
 			case 2:
-				ycoord = oney;
+				ycoord = MARKER_ONE_Y;
+				break;
 			case 3:
-				ycoord = twoy;
+				ycoord = MARKER_TWO_Y;
+				break;
 			case 4:
-				ycoord = threey;
+				ycoord = MARKER_THREE_Y;
+				break;
 			case 5:
-				ycoord = foury;
+				ycoord = MARKER_FOUR_Y;
+				break;
 		}
 		Double Y = distanceM() * Math.sin(Math.toRadians(realangle)) + ycoord;
 		return Y;
@@ -194,7 +208,6 @@ public class LimelightSubsystem extends SubsystemBase {
 	// finds absolute rotation of robot on field,
 	public Double degrees() {
 
-		findPL();
 		switch (pl) {
 			case 0:
 				return null;
@@ -202,21 +215,23 @@ public class LimelightSubsystem extends SubsystemBase {
 				return null;
 			case 2:
 				compassdeg = 270.00 - Math.abs(s); // marker 1
+				break;
 			case 3:
 				compassdeg = Math.abs(s) + 270.00; // marker 2
+				break;
 			case 4:
 				compassdeg = 90.00 - Math.abs(s); // marker 3
+				break;
 			case 5:
 				compassdeg = Math.abs(s) + 90.00; // marker 4
+				break;
 		}
 		return compassdeg;
-
 	}
 
 	// distance in inches to shooter target
 	public Double distance() {
 
-		findPL();
 		if (pl != 0) {
 			return null;
 		} else {
@@ -242,13 +257,35 @@ public class LimelightSubsystem extends SubsystemBase {
 		y = ty.getDouble(0.0);
 		v = tv.getDouble(0.0);
 		s = ts.getDouble(0.0);
+		p = pip.getDouble(0.0);
 		SmartDashboard.putNumber("LimelightX", x);
 		SmartDashboard.putNumber("LimelightY", y);
 		SmartDashboard.putNumber("LimelightS", s);
-		SmartDashboard.putNumber("Limelightdistance", distance());
-		SmartDashboard.putNumber("LimelightdistanceM", distanceM());
-		SmartDashboard.putNumber("Limelightcardinal", degrees());
-		SmartDashboard.putNumber("LimelightxCoord", locX());
-		SmartDashboard.putNumber("LimelightyCoord", locY());
+		SmartDashboard.putNumber("LimelightPipeline", p);
+		if (distance() != null) {
+			SmartDashboard.putNumber("LimelightDistance", distance());
+		} else {
+			SmartDashboard.putNumber("Distance to shooter target cannot be found.", -99999.99);
+		}
+		if (distanceM() != null) {
+			SmartDashboard.putNumber("LimelightDistanceM", distanceM());
+		} else {
+			SmartDashboard.putNumber("Distance to a marker cannot be found.", -99999.99);
+		}
+		if (degrees() != null) {
+			SmartDashboard.putNumber("LimelightCardinal", degrees());
+		} else {
+			SmartDashboard.putNumber("Cardinal rotation cannot be found.", -99999.99);
+		}
+		if (locX() != null) {
+			SmartDashboard.putNumber("LimelightxCoord", locX());
+		} else {
+			SmartDashboard.putNumber("Coordinates cannot be found.", -99999.99);
+		}
+		if (locY() != null) {
+			SmartDashboard.putNumber("LimelightyCoord", locY());
+		} else {
+			SmartDashboard.putNumber("Coordinates cannot be found.", -99999.99);
+		}
 	}
 }
