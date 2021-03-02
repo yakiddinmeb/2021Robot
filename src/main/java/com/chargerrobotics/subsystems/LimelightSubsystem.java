@@ -63,26 +63,6 @@ public class LimelightSubsystem extends SubsystemBase {
 	// The lines next to each number represent the way a board covered in
 	// retroreflective tape of a specfic color or shape should be placed in respect to
 	// each other.
-
-	// pipelines each significant target corresponds to
-	public final int shooterTarget = 0;
-	public final int fuelTarget = 1;
-	public final int MARKER1 = 2;
-	public final int MARKER2 = 3;
-	public final int MARKER3 = 4;
-	public final int MARKER4 = 5;
-
-	// Placeholder values for coordinates of markers, in inches (should probably put
-	// these in constants but don't want to screw up anything)
-	public final double MARKER_ONE_X = 0;
-	public final double MARKER_ONE_Y = 0;
-	public final double MARKER_TWO_X = 0;
-	public final double MARKER_TWO_Y = 20;
-	public final double MARKER_THREE_X = 60;
-	public final double MARKER_THREE_Y = 20;
-	public final double MARKER_FOUR_X = 60;
-	public final double MARKER_FOUR_Y = 0;
-
 	public double getX() {
 		/**
 		 * If there is no target (v == 0) then return 0.0 for angle... don't want robot
@@ -116,6 +96,7 @@ public class LimelightSubsystem extends SubsystemBase {
 
 	// cycles through pipelines looking for a target
 	public int findPL() {
+		int pl = -1;
 		for (int b = 0; b <= 10; b++) {
 			pip.setNumber(b);
 			pl = b;
@@ -125,11 +106,10 @@ public class LimelightSubsystem extends SubsystemBase {
 		return pl;
 	}
 
-	int pl = findPL();
-
 	// finds distance to markers
 	public Double distanceM() {
-		if (pl == shooterTarget || pl == fuelTarget)
+		int pl = findPL();
+		if (pl == Constants.shooterTarget || pl == Constants.fuelTarget)
 			return null;
 		distM = Constants.cameraHeight * (Math.tan(Math.toRadians(Math.abs(y - Constants.cameraAngle))));
 		return distM;
@@ -137,12 +117,13 @@ public class LimelightSubsystem extends SubsystemBase {
 
 	// returns x coordinates in inches
 	public Double locX() {
+		int pl = findPL();
 		double skew;
 
-		if (pl == MARKER1 || pl == MARKER3) {
+		if (pl == Constants.MARKER1 || pl == Constants.MARKER3) {
 			skew = s * -1.0;
 			realangle = skew + x;
-		} else if (pl == MARKER2 || pl == MARKER4) {
+		} else if (pl == Constants.MARKER2 || pl == Constants.MARKER4) {
 			skew = s + 90.0;
 			realangle = skew - x;
 		} else {
@@ -154,16 +135,16 @@ public class LimelightSubsystem extends SubsystemBase {
 			case 1:
 				return null;
 			case 2:
-				xcoord = MARKER_ONE_X;
+				xcoord = Constants.MARKER_ONE_X;
 				break;
 			case 3:
-				xcoord = MARKER_TWO_X;
+				xcoord = Constants.MARKER_TWO_X;
 				break;
 			case 4:
-				xcoord = MARKER_THREE_X;
+				xcoord = Constants.MARKER_THREE_X;
 				break;
 			case 5:
-				xcoord = MARKER_FOUR_X;
+				xcoord = Constants.MARKER_FOUR_X;
 				break;
 		}
 		Double X = distanceM() * Math.cos(Math.toRadians(realangle)) + xcoord;
@@ -172,12 +153,13 @@ public class LimelightSubsystem extends SubsystemBase {
 
 	// returns y coordinantes in inches
 	public Double locY() {
-		double skew;
 
-		if (pl == MARKER1 || pl == MARKER3) {
+		int pl = findPL();
+		double skew;
+		if (pl == Constants.MARKER1 || pl == Constants.MARKER3) {
 			skew = s * -1.0;
 			realangle = skew + x;
-		} else if (pl == MARKER2 || pl == MARKER4) {
+		} else if (pl == Constants.MARKER2 || pl == Constants.MARKER4) {
 			skew = s + 90.0;
 			realangle = skew - x;
 		} else {
@@ -189,16 +171,16 @@ public class LimelightSubsystem extends SubsystemBase {
 			case 1:
 				return null;
 			case 2:
-				ycoord = MARKER_ONE_Y;
+				ycoord = Constants.MARKER_ONE_Y;
 				break;
 			case 3:
-				ycoord = MARKER_TWO_Y;
+				ycoord = Constants.MARKER_TWO_Y;
 				break;
 			case 4:
-				ycoord = MARKER_THREE_Y;
+				ycoord = Constants.MARKER_THREE_Y;
 				break;
 			case 5:
-				ycoord = MARKER_FOUR_Y;
+				ycoord = Constants.MARKER_FOUR_Y;
 				break;
 		}
 		Double Y = distanceM() * Math.sin(Math.toRadians(realangle)) + ycoord;
@@ -208,6 +190,7 @@ public class LimelightSubsystem extends SubsystemBase {
 	// finds absolute rotation of robot on field,
 	public Double degrees() {
 
+		int pl = findPL();
 		switch (pl) {
 			case 0:
 				return null;
@@ -232,6 +215,7 @@ public class LimelightSubsystem extends SubsystemBase {
 	// distance in inches to shooter target
 	public Double distance() {
 
+		int pl = findPL();
 		if (pl != 0) {
 			return null;
 		} else {
@@ -258,32 +242,38 @@ public class LimelightSubsystem extends SubsystemBase {
 		v = tv.getDouble(0.0);
 		s = ts.getDouble(0.0);
 		p = pip.getDouble(0.0);
+		Double dist = distance();
+		Double distM = distanceM();
+		Double lx = locX();
+		Double ly = locY();
+		Double deg = degrees();
 		SmartDashboard.putNumber("LimelightX", x);
 		SmartDashboard.putNumber("LimelightY", y);
 		SmartDashboard.putNumber("LimelightS", s);
 		SmartDashboard.putNumber("LimelightPipeline", p);
-		if (distance() != null) {
-			SmartDashboard.putNumber("LimelightDistance", distance());
+
+		if (dist != null) {
+			SmartDashboard.putNumber("LimelightDistance", dist);
 		} else {
 			SmartDashboard.putNumber("Distance to shooter target cannot be found.", -99999.99);
 		}
-		if (distanceM() != null) {
-			SmartDashboard.putNumber("LimelightDistanceM", distanceM());
+		if (distM != null) {
+			SmartDashboard.putNumber("LimelightDistanceM", distM);
 		} else {
 			SmartDashboard.putNumber("Distance to a marker cannot be found.", -99999.99);
 		}
-		if (degrees() != null) {
-			SmartDashboard.putNumber("LimelightCardinal", degrees());
+		if (deg != null) {
+			SmartDashboard.putNumber("LimelightCardinal", deg);
 		} else {
 			SmartDashboard.putNumber("Cardinal rotation cannot be found.", -99999.99);
 		}
-		if (locX() != null) {
-			SmartDashboard.putNumber("LimelightxCoord", locX());
+		if (lx != null) {
+			SmartDashboard.putNumber("LimelightxCoord", lx);
 		} else {
 			SmartDashboard.putNumber("Coordinates cannot be found.", -99999.99);
 		}
-		if (locY() != null) {
-			SmartDashboard.putNumber("LimelightyCoord", locY());
+		if (ly != null) {
+			SmartDashboard.putNumber("LimelightyCoord", ly);
 		} else {
 			SmartDashboard.putNumber("Coordinates cannot be found.", -99999.99);
 		}
