@@ -96,9 +96,9 @@ public final class Constants {
 	public static final double MARKER_ONE_X = 0;
 	public static final double MARKER_ONE_Y = 0;
 	public static final double MARKER_TWO_X = 0;
-	public static final double MARKER_TWO_Y = 20;
+	public static final double MARKER_TWO_Y = 21;
 	public static final double MARKER_THREE_X = 60;
-	public static final double MARKER_THREE_Y = 20;
+	public static final double MARKER_THREE_Y = 21;
 	public static final double MARKER_FOUR_X = 60;
 	public static final double MARKER_FOUR_Y = 0;
 
