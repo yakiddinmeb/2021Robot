@@ -187,7 +187,7 @@ public class LimelightSubsystem extends SubsystemBase {
 		return Y;
 	}
 
-	// finds absolute rotation of robot on field,
+	// Finds absolute rotation of robot on field,
 	public Double degrees() {
 
 		int pl = findPL();
