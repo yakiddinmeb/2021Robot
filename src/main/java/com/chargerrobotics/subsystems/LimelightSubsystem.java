@@ -212,7 +212,7 @@ public class LimelightSubsystem extends SubsystemBase {
 		return compassdeg;
 	}
 
-	// distance in inches to shooter target
+	//Distance in inches to shooter target
 	public Double distance() {
 
 		int pl = findPL();
