@@ -118,11 +118,14 @@ public class LimelightSubsystem extends SubsystemBase {
     double skew;
 
     if (pl == Constants.MARKER1 || pl == Constants.MARKER3) {
-      skew = s * -1.0;
-      realangle = skew + x;
+      if (s == 0) {
+        realangle = 0.00;
+      }
+      skew = Math.abs(s);
+      realangle = 90.00 - skew;
     } else if (pl == Constants.MARKER2 || pl == Constants.MARKER4) {
-      skew = s + 90.0;
-      realangle = skew - x;
+      skew = Math.abs(s);
+      realangle = 90.00 - skew;
     } else {
       return null;
     }
@@ -154,11 +157,14 @@ public class LimelightSubsystem extends SubsystemBase {
     int pl = findPL();
     double skew;
     if (pl == Constants.MARKER1 || pl == Constants.MARKER3) {
-      skew = s * -1.0;
-      realangle = skew + x;
+      if (s == 0) {
+        realangle = 0.00;
+      }
+      skew = Math.abs(s);
+      realangle = 90.00 - skew;
     } else if (pl == Constants.MARKER2 || pl == Constants.MARKER4) {
-      skew = s + 90.0;
-      realangle = skew - x;
+      skew = Math.abs(s);
+      realangle = 90.00 - skew;
     } else {
       return null;
     }
@@ -194,13 +200,23 @@ public class LimelightSubsystem extends SubsystemBase {
       case 1:
         return null;
       case 2:
-        compassdeg = 270.00 - Math.abs(s); // marker 1
+        if (s == 0) {
+          compassdeg = 270.00;
+        } else {
+          compassdeg = Math.abs(s) + 180.00; // marker 1
+        }
+
         break;
       case 3:
         compassdeg = Math.abs(s) + 270.00; // marker 2
         break;
       case 4:
-        compassdeg = 90.00 - Math.abs(s); // marker 3
+        if (s == 0) {
+          compassdeg = 90.00;
+
+        } else {
+          compassdeg = Math.abs(s); // marker 3
+        }
         break;
       case 5:
         compassdeg = Math.abs(s) + 90.00; // marker 4
