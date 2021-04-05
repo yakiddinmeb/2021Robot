@@ -53,7 +53,7 @@ public class LimelightSubsystem extends SubsystemBase {
   // would be placed as:
   // 2|                N                  |3
   //
-  // W             \(r😏bot)/             E
+  // W             \(robot)/             E
   //
   //
   // 1| __________________________________|4
@@ -115,17 +115,15 @@ public class LimelightSubsystem extends SubsystemBase {
   // returns x coordinates in inches
   public Double locX() {
     int pl = findPL();
-    double skew;
 
     if (pl == Constants.MARKER1 || pl == Constants.MARKER3) {
       if (s == 0) {
         realangle = 0.00;
+      } else {
+        realangle = 90.00 - Math.abs(s);
       }
-      skew = Math.abs(s);
-      realangle = 90.00 - skew;
     } else if (pl == Constants.MARKER2 || pl == Constants.MARKER4) {
-      skew = Math.abs(s);
-      realangle = 90.00 - skew;
+      realangle = 90.00 - Math.abs(s);
     } else {
       return null;
     }
@@ -155,16 +153,17 @@ public class LimelightSubsystem extends SubsystemBase {
   public Double locY() {
 
     int pl = findPL();
-    double skew;
+
     if (pl == Constants.MARKER1 || pl == Constants.MARKER3) {
       if (s == 0) {
         realangle = 0.00;
+      } else {
+
+        realangle = 90.00 - Math.abs(s);
       }
-      skew = Math.abs(s);
-      realangle = 90.00 - skew;
     } else if (pl == Constants.MARKER2 || pl == Constants.MARKER4) {
-      skew = Math.abs(s);
-      realangle = 90.00 - skew;
+
+      realangle = 90.00 - Math.abs(s);
     } else {
       return null;
     }
